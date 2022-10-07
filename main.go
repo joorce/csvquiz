@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -24,17 +25,10 @@ type QuizResponse struct {
 var quizItems []QuizItem
 
 func getQuizItems() {
-	args := os.Args[1:]
+	filename := flag.String("f", "problems.csv", "the file with questions")
+	flag.Parse()
 
-	if len(args) == 0 {
-		println("No argument")
-		return
-	}
-
-	csvfilename := args[0]
-	// println(csvfilename)
-
-	f, err := os.Open(csvfilename)
+	f, err := os.Open(*filename)
 	if err != nil {
 		panic(err)
 	}
@@ -54,8 +48,6 @@ func getQuizItems() {
 		}
 		quizItem := QuizItem{row[0], row[1]}
 		quizItems = append(quizItems, quizItem)
-
-		// fmt.Printf("%+v\n", quizItem)
 
 	}
 }
@@ -93,10 +85,8 @@ func askQuestions() {
 }
 
 func main() {
+
 	getQuizItems()
 	askQuestions()
 	fmt.Printf("%v correct answers from %v questions\n", correctAnswers, len(quizItems))
-	// fmt.Printf("%+v\n", answers)
-	// fmt.Printf("%+v\n", quizItems)
-
 }
