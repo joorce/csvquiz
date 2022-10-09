@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 type QuizItem struct {
@@ -57,6 +58,7 @@ var correctAnswers = 0
 var incorrectAnswers = 0
 
 func askQuestions() {
+
 	fmt.Println("Answer the questions")
 	reader := bufio.NewReader(os.Stdin)
 	for i := 0; i < len(quizItems); i++ {
@@ -80,13 +82,18 @@ func askQuestions() {
 			Answer:    answer,
 			IsCorrect: isCorrect})
 
-		fmt.Printf("Correct: %v, Incorrect: %v\n", correctAnswers, incorrectAnswers)
 	}
 }
 
 func main() {
 
 	getQuizItems()
-	askQuestions()
+
+	timerCh := time.NewTimer(2 * time.Second)
+	go askQuestions()
+
+	<-timerCh.C
+	println("\nTimer finished")
+
 	fmt.Printf("%v correct answers from %v questions\n", correctAnswers, len(quizItems))
 }
