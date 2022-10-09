@@ -26,9 +26,6 @@ type QuizResponse struct {
 var quizItems []QuizItem
 
 func getQuizItems() {
-	filename := flag.String("f", "problems.csv", "the file with questions")
-	flag.Parse()
-
 	f, err := os.Open(*filename)
 	if err != nil {
 		panic(err)
@@ -56,6 +53,14 @@ func getQuizItems() {
 var answers = make([]QuizResponse, 0)
 var correctAnswers = 0
 var incorrectAnswers = 0
+var limit *time.Duration
+var filename *string
+
+func config() {
+	limit = flag.Duration("l", time.Duration(30*time.Second), "the file with questions")
+	filename = flag.String("f", "problems.csv", "the file with questions")
+	flag.Parse()
+}
 
 func askQuestions() {
 
@@ -86,14 +91,14 @@ func askQuestions() {
 }
 
 func main() {
-
+	config()
 	getQuizItems()
 
-	timerCh := time.NewTimer(2 * time.Second)
+	timerCh := time.NewTimer(*limit)
 	go askQuestions()
 
 	<-timerCh.C
-	println("\nTimer finished")
+	println("\nTime's up!!!")
 
 	fmt.Printf("%v correct answers from %v questions\n", correctAnswers, len(quizItems))
 }
