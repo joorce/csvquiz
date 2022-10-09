@@ -94,10 +94,17 @@ func main() {
 	config()
 	getQuizItems()
 
+<<<<<<< HEAD
 	timer := time.NewTimer(*limit)
 	go askQuestions()
 
 	<-timer.C
+=======
+	timerCh := time.NewTimer(*limit)
+	go askQuestions()
+
+	<-timerCh.C
+>>>>>>> 1da7b7be932ab8d221229e603c25af4c1e9fa53e
 	println("\nTime's up!!!")
 
 	fmt.Printf("%v correct answers from %v questions\n", correctAnswers, len(quizItems))
